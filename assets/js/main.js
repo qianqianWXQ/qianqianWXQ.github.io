@@ -121,3 +121,67 @@
 		});
 
 })(jQuery);
+		// Portfolio Slider - 作品链接轮播
+		(function($) {
+			var $slider = $('.portfolio-slider');
+			var $track = $slider.find('.slider-track');
+			var $slides = $slider.find('.portfolio-slide');
+			var $dots = $slider.find('.slider-dot');
+			var current = 0;
+			var total = $slides.length;
+
+			function goTo(index) {
+				if (index < 0) index = total - 1;
+				if (index >= total) index = 0;
+				current = index;
+				$track.css('transform', 'translateX(-' + (current * 100) + '%)');
+				$dots.removeClass('active');
+				$dots.eq(current).addClass('active');
+			}
+
+			$slider.find('.slider-prev').on('click', function() { goTo(current - 1); });
+			$slider.find('.slider-next').on('click', function() { goTo(current + 1); });
+			$dots.on('click', function() { goTo($(this).index()); });
+
+			// 内嵌轮播：多图切换
+			var $carousels = $slider.find('.inner-carousel');
+			$carousels.each(function() {
+				var $container = $(this);
+				var $innerSlides = $container.find('.inner-slide');
+				var $innerDots = $container.find('.inner-dot');
+				var $desc = $container.closest('.portfolio-slide').find('.slide-desc');
+				var idx = 0;
+
+				function goInner(i) {
+					if (i < 0) i = $innerSlides.length - 1;
+					if (i >= $innerSlides.length) i = 0;
+					idx = i;
+					$innerSlides.removeClass('active');
+					$innerSlides.eq(idx).addClass('active');
+					$innerDots.removeClass('active');
+					$innerDots.eq(idx).addClass('active');
+					$desc.text('当前展示：' + ($innerSlides.eq(idx).data('caption') || ''));
+				}
+
+				$innerDots.on('click', function() { goInner($(this).index()); });
+
+				// 触摸 & 鼠标滑动切换
+				var sx = 0, sy = 0, dragging = false;
+				$container.on('mousedown touchstart', function(e) {
+					dragging = true;
+					sx = e.type === 'touchstart' ? e.originalEvent.touches[0].clientX : e.clientX;
+					sy = e.type === 'touchstart' ? e.originalEvent.touches[0].clientY : e.clientY;
+					e.originalEvent && e.originalEvent.preventDefault && e.originalEvent.preventDefault();
+				});
+				$(document).on('mouseup touchend', function(e) {
+					if (!dragging) return;
+					dragging = false;
+					var ex = e.type === 'touchend' ? e.originalEvent.changedTouches[0].clientX : e.clientX;
+					var ey = e.type === 'touchend' ? e.originalEvent.changedTouches[0].clientY : e.clientY;
+					var dx = ex - sx, dy = ey - sy;
+					if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) {
+						goInner(dx < 0 ? idx + 1 : idx - 1);
+					}
+				});
+			});
+		})(jQuery);
