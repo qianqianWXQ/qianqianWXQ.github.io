@@ -4040,7 +4040,12 @@ input, select, textarea {
 	}
 
 	/* 内嵌轮播 */
-	.inner-carousel { position: relative; }
+	.inner-carousel {
+			position: relative;
+			touch-action: pan-y;
+			user-select: none;
+			-webkit-user-select: none;
+		}
 	.inner-slides { position: relative; height: 100%; }
 
 	.inner-slide img {

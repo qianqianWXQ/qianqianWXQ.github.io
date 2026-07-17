@@ -166,12 +166,22 @@
 				$innerDots.on('click', function() { goInner($(this).index()); });
 
 				// 触摸 & 鼠标滑动切换
-				var sx = 0, sy = 0, dragging = false;
+				var sx = 0, sy = 0, dragging = false, isHorizontal = false;
 				$container.on('mousedown touchstart', function(e) {
 					dragging = true;
+					isHorizontal = false;
 					sx = e.type === 'touchstart' ? e.originalEvent.touches[0].clientX : e.clientX;
 					sy = e.type === 'touchstart' ? e.originalEvent.touches[0].clientY : e.clientY;
-					e.originalEvent && e.originalEvent.preventDefault && e.originalEvent.preventDefault();
+				});
+				$container.on('touchmove', function(e) {
+					if (!dragging) return;
+					var dx = e.originalEvent.touches[0].clientX - sx;
+					var dy = e.originalEvent.touches[0].clientY - sy;
+					// 水平滑动幅度大于垂直时，阻止浏览器默认行为（回退/前进）
+					if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+						isHorizontal = true;
+						e.originalEvent.preventDefault();
+					}
 				});
 				$(document).on('mouseup touchend', function(e) {
 					if (!dragging) return;
