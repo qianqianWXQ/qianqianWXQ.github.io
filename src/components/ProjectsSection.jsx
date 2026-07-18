@@ -4,36 +4,57 @@ import useWheelSwipe from '../hooks/useWheelSwipe'
 
 import 'swiper/css'
 
+/**
+ * 项目数据。
+ * 每个项目用 fields 键值对（{ label, value }）承载信息：标签写进数据、而不是写死在 JSX 里，
+ * 这样增删字段只需改数据，不用动渲染逻辑。
+ * value 为字符串 → 渲染成单行文本；为数组 → 渲染成有序列表（如「项目职责」的多条）。
+ */
 const PROJECTS = [
     {
         name: '人才管理平台',
-        tech: 'React',
-        audience: '政府+教育机构',
-        business: '政府、机构考试全流程',
-        duties: [
-            '独立负责微前端项目的接入和改造',
-            '独立负责微前端项目的接入和改造',
-            '负责项目日常维护及后台cms系统',
+        fields: [
+            { label: '技术要点', value: 'React' },
+            { label: '服务对象', value: '政府+教育机构' },
+            { label: '业务内容', value: '政府、机构考试全流程' },
+            {
+                label: '项目职责',
+                value: [
+                    '独立负责微前端项目的接入和改造',
+                    '独立负责微前端项目的接入和改造',
+                    '负责项目日常维护及后台cms系统',
+                ],
+            },
         ],
     },
     {
         name: '考试管理系统',
-        tech: 'Electron、React',
-        audience: '政府+教育机构',
-        business: '离线考试',
-        duties: [
-            '独立负责项目基建工作',
-            '独立负责本地 indexdb 存储',
+        fields: [
+            { label: '技术要点', value: 'Electron、React' },
+            { label: '服务对象', value: '政府+教育机构' },
+            { label: '业务内容', value: '离线考试' },
+            {
+                label: '项目职责',
+                value: [
+                    '独立负责项目基建工作',
+                    '独立负责本地 indexdb 存储',
+                ],
+            },
         ],
     },
     {
         name: '教之舟',
-        tech: 'Vue、Uni-app、Echarts',
-        audience: '学校、教师、学生',
-        business: '数据可视化',
-        duties: [
-            '独立负责前端项目可视化改造',
-            '接入 uni-app，实现可视化图表跨端展示',
+        fields: [
+            { label: '技术要点', value: 'Vue、Uni-app、Echarts' },
+            { label: '服务对象', value: '学校、教师、学生' },
+            { label: '业务内容', value: '数据可视化' },
+            {
+                label: '项目职责',
+                value: [
+                    '独立负责前端项目可视化改造',
+                    '接入 uni-app，实现可视化图表跨端展示',
+                ],
+            },
         ],
     },
 ]
@@ -86,17 +107,27 @@ const ProjectsSection = () => {
                         <SwiperSlide key={index}>
                             <div className="project-card">
                                 <h3>{project.name}</h3>
-                                <p>技术要点：{project.tech}</p>
-                                <p>服务对象：{project.audience}</p>
-                                <p>业务内容：{project.business}</p>
-                                <div className="project-duties">
-                                    <span className="duties-label">项目职责：</span>
-                                    <ol>
-                                        {project.duties.map((duty, i) => (
-                                            <li key={i}>{duty}</li>
-                                        ))}
-                                    </ol>
-                                </div>
+                                {project.fields
+                                    // 跳过空值字段（null / 空串 / 空数组），避免留下无内容的「标签：」
+                                    .filter((field) => {
+                                        const v = field.value
+                                        return v != null && v !== '' && !(Array.isArray(v) && v.length === 0)
+                                    })
+                                    .map((field, i) => (
+                                        <div className="project-field" key={i}>
+                                            <span className="field-label">{field.label}：</span>
+                                            {/* value 是数组 → 渲染成列表；是字符串 → 渲染成文本 */}
+                                            {Array.isArray(field.value) ? (
+                                                <ol>
+                                                    {field.value.map((v, j) => (
+                                                        <li key={j}>{v}</li>
+                                                    ))}
+                                                </ol>
+                                            ) : (
+                                                <span className="field-value">{field.value}</span>
+                                            )}
+                                        </div>
+                                    ))}
                             </div>
                         </SwiperSlide>
                     ))}
