@@ -37,6 +37,7 @@ footer, header, hgroup, menu, nav, section {
 
 body {
 	line-height: 1;
+	overscroll-behavior-x: none;
 }
 
 ol, ul {
@@ -3837,60 +3838,16 @@ input, select, textarea {
 
 
 
-/* Portfolio Slider - 作品链接轮播 */
+/* Portfolio Slider - 作品链接轮播 (Swiper) */
 	.portfolio-slider {
 		position: relative;
-		overflow-x: hidden;
+		overflow: hidden;
 		max-width: 72em;
 		margin: 0 auto;
 	}
 
-	.slider-arrow {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 3em;
-		height: 3em;
-		min-width: 0;
-		padding: 0;
-		border-radius: 50%;
-		border: none;
-		background: rgba(0, 0, 0, 0.5);
-		color: #fff;
-		font-size: 1em;
-		line-height: 1;
-		cursor: pointer;
-		z-index: 10;
-		transition: background 0.3s;
-		display: -moz-flex;
-		display: -webkit-flex;
-		display: -ms-flex;
-		display: flex;
-		-moz-align-items: center;
-		-webkit-align-items: center;
-		-ms-align-items: center;
-		align-items: center;
-		-moz-justify-content: center;
-		-webkit-justify-content: center;
-		-ms-justify-content: center;
-		justify-content: center;
-	}
-
-	.slider-arrow:hover { background: rgba(0, 0, 0, 0.8); }
-	.slider-prev { left: 0.5em; }
-	.slider-next { right: 0.5em; }
-
-	.slider-track {
-		display: -moz-flex;
-		display: -webkit-flex;
-		display: -ms-flex;
-		display: flex;
-		transition: transform 0.5s ease;
-	}
-
+	/* Swiper slide 内部布局 */
 	.portfolio-slide {
-		min-width: 100%;
-		flex-shrink: 0;
 		display: -moz-flex;
 		display: -webkit-flex;
 		display: -ms-flex;
@@ -3940,6 +3897,7 @@ input, select, textarea {
 	.slide-image img {
 		width: 100%;
 		height: 100%;
+			touch-action: pan-y;
 		object-fit: contain;
 		display: block;
 	}
@@ -3959,6 +3917,8 @@ input, select, textarea {
 		-ms-justify-content: center;
 		justify-content: center;
 		background: #f5f5f5;
+		height: 100%;
+			touch-action: pan-y;
 	}
 
 	.card-placeholder .icon {
@@ -4002,95 +3962,47 @@ input, select, textarea {
 		background: rgba(99, 99, 99, 0.06);
 	}
 
-	/* 内嵌轮播 */
-	.inner-carousel {
-			position: relative;
-			touch-action: pan-y;
-			user-select: none;
-			-webkit-user-select: none;
-		}
-	.inner-slides { position: relative; height: 100%; }
-
-	.inner-slide img {
+	/* 内层 Swiper 覆盖样式 */
+	.inner-swiper {
 		height: 100%;
-		object-fit: contain;
+			touch-action: pan-y;
 	}
-
-	.inner-slide {
-		position: absolute;
-		top: 0;
-		left: 0;
+	.inner-swiper img {
 		width: 100%;
 		height: 100%;
-		opacity: 0;
-		transition: opacity 0.4s ease;
+			touch-action: pan-y;
+		object-fit: contain;
 	}
-
-	.inner-slide.active { opacity: 1; }
-
-	.inner-dots {
-		position: absolute;
+	.inner-swiper .swiper-pagination {
 		bottom: 12px;
-		left: 50%;
+	}
+	.inner-swiper .swiper-horizontal > .swiper-pagination-bullets,
+	.inner-swiper .swiper-pagination-bullets.swiper-pagination-horizontal {
 		transform: translateX(-50%);
-		display: -moz-flex;
-		display: -webkit-flex;
-		display: -ms-flex;
-		display: flex;
+		bottom: var(--swiper-pagination-bottom, 8px);
+		top: var(--swiper-pagination-top, auto);
+		left: 50%;
+		width: auto;
+		display: inline-flex;
 		gap: 8px;
-		z-index: 5;
 		padding: 6px 10px;
 		background: rgba(0, 0, 0, 0.45);
 		border-radius: 16px;
 	}
-
-	.inner-dot {
+	.inner-swiper .swiper-pagination-bullet {
 		width: 10px;
 		height: 10px;
-		padding: 0;
-		border-radius: 50%;
 		background: rgba(255, 255, 255, 0.4);
-		color: transparent;
-		font-size: 0;
-		cursor: pointer;
+		opacity: 1;
 		transition: all 0.3s;
 	}
-
-	.inner-dot.active {
+	.inner-swiper .swiper-pagination-bullet-active {
 		background: #fff;
 		transform: scale(1.2);
 	}
-
-	.inner-dot:hover {
+	.inner-swiper .swiper-pagination-bullet:hover {
 		background: rgba(255, 255, 255, 0.7);
 	}
-
-	.inner-arrow {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 2.5em;
-		height: 2.5em;
-		min-width: 0;
-		padding: 0;
-		border-radius: 50%;
-		border: 2px solid rgba(255, 255, 255, 0.8);
-		background: rgba(0, 0, 0, 0.7);
-		color: #fff;
-		font-size: 1.5em;
-		line-height: 1;
-		cursor: pointer;
-		z-index: 10;
-		transition: background 0.3s, border-color 0.3s;
-	}
-
-	.inner-arrow:hover {
-		background: rgba(0, 0, 0, 0.9);
-		border-color: #fff;
-	}
-
-	.inner-prev { left: 8px; }
-	.inner-next { right: 8px; }
 
 	/* 响应式适配 */
 	@media screen and (max-width: 736px) {
@@ -4119,4 +4031,76 @@ input, select, textarea {
 		.slide-image {
 			height: 160px;
 		}
+	}
+
+/* Projects Slider - 项目介绍轮播 (Swiper) */
+	.projects-slider {
+		position: relative;
+		overflow: hidden;
+		max-width: 72em;
+		margin: 0 auto;
+	}
+
+	.project-card {
+		display: -moz-flex;
+		display: -webkit-flex;
+		display: -ms-flex;
+		display: flex;
+		-moz-flex-direction: column;
+		-webkit-flex-direction: column;
+		-ms-flex-direction: column;
+		flex-direction: column;
+		height: 100%;
+		padding: 1.5em 1.6em;
+		background: #f5f5f5;
+		border-radius: 8px;
+		box-sizing: border-box;
+	}
+
+	.project-card h3 {
+		font-size: 1.15em;
+		margin: 0 0 0.8em 0;
+		color: #485589;
+	}
+
+	.project-card p {
+		font-size: 0.92em;
+		line-height: 1.7;
+		margin: 0 0 0.6em 0;
+		color: #555;
+	}
+
+	.project-card .project-duties {
+		margin-top: 0.3em;
+	}
+
+	.project-card .duties-label {
+		display: block;
+		font-size: 0.92em;
+		color: #555;
+		margin-bottom: 0.3em;
+	}
+
+	.project-card .project-duties ol {
+		margin: 0;
+		padding-left: 1.4em;
+		color: #555;
+		font-size: 0.9em;
+		line-height: 1.7;
+	}
+
+	.project-card .project-duties li {
+		margin-bottom: 0.2em;
+	}
+
+	/* 项目介绍轮播：卡片等高 + 底部对齐 */
+	.projects-swiper .swiper-wrapper {
+		-moz-align-items: stretch;
+		-webkit-align-items: stretch;
+		-ms-align-items: stretch;
+		align-items: stretch;
+	}
+
+	.projects-swiper .swiper-slide {
+		height: auto;
 	}

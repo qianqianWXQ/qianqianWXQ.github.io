@@ -1,5 +1,9 @@
 import { useState, useCallback } from 'react'
+import { Swiper, SwiperSlide } from 'swiper/react'
 import InnerCarousel from './InnerCarousel'
+import useWheelSwipe from '../hooks/useWheelSwipe'
+
+import 'swiper/css'
 
 const PROJECTS = [
     {
@@ -32,7 +36,7 @@ const PROJECTS = [
             { src: '/images/farm-spring.png', alt: 'Farm 春', caption: '春' },
             { src: '/images/farm-summer.png', alt: 'Farm 夏', caption: '夏' },
             { src: '/images/farm-autumn.png', alt: 'Farm 秋', caption: '秋' },
-            { src: '/images/farm-winter.png', alt: 'Farm 冬', caption: '冬' },
+            { src: '/images/farm-winter.png', alt: 'Farm 农', caption: '冬' },
         ],
     },
     {
@@ -56,9 +60,14 @@ const PortfolioSection = () => {
         4: PROJECTS[4].images[0].caption,
     })
 
+    const [swiperInstance, setSwiperInstance] = useState(null)
+    useWheelSwipe(swiperInstance)
+
     const handleDotClick = useCallback((index) => {
-        setActiveIndex(index)
-    }, [])
+        if (swiperInstance) {
+            swiperInstance.slideTo(index)
+        }
+    }, [swiperInstance])
 
     const handleCaptionChange = useCallback((projectIndex, caption) => {
         setCaptionMap((prev) => ({ ...prev, [projectIndex]: caption }))
@@ -81,34 +90,43 @@ const PortfolioSection = () => {
                         </span>
                     ))}
                 </div>
-                <div className="slider-track"
-                    style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+                <Swiper
+                    modules={[]}
+                    slidesPerView={1}
+                    spaceBetween={0}
+                    passiveListeners={false}
+                    edgeSwipeDetection="prevent"
+                    onSwiper={setSwiperInstance}
+                    onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+                    className="portfolio-swiper"
                 >
                     {PROJECTS.map((project, index) => (
-                        <div key={index} className="portfolio-slide">
-                            <div className="slide-content">
-                                <p>
-                                    项目简介：{project.description}<br />
-                                    技术点：{project.techPoints}<br />
-                                    <a target="_blank" href={project.link}>点击跳转</a>
-                                </p>
-                                {project.images && captionMap[index] && (
-                                    <p className="slide-desc">当前展示：{captionMap[index]}</p>
-                                )}
+                        <SwiperSlide key={index}>
+                            <div className="portfolio-slide">
+                                <div className="slide-content">
+                                    <p>
+                                        项目简介：{project.description}<br />
+                                        技术点：{project.techPoints}<br />
+                                        <a target="_blank" href={project.link}>点击跳转</a>
+                                    </p>
+                                    {project.images && captionMap[index] && (
+                                        <p className="slide-desc">当前展示：{captionMap[index]}</p>
+                                    )}
+                                </div>
+                                <div className="slide-image">
+                                    {project.images ? (
+                                        <InnerCarousel
+                                            slides={project.images}
+                                            onCaptionChange={(caption) => handleCaptionChange(index, caption)}
+                                        />
+                                    ) : (
+                                        <div className="card-placeholder"></div>
+                                    )}
+                                </div>
                             </div>
-                            <div className="slide-image">
-                                {project.images ? (
-                                    <InnerCarousel
-                                        slides={project.images}
-                                        onCaptionChange={(caption) => handleCaptionChange(index, caption)}
-                                    />
-                                ) : (
-                                    <div className="card-placeholder"></div>
-                                )}
-                            </div>
-                        </div>
+                        </SwiperSlide>
                     ))}
-                </div>
+                </Swiper>
             </div>
         </section>
     )
