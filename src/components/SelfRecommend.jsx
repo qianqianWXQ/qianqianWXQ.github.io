@@ -23,7 +23,7 @@ const SelfRecommend = () => {
                 </li>
                 <li className="style5">
                     <span className="icon fa-gem"></span>
-                    <div>软技能</div>
+                    <div>ai 辅助开发</div>
                 </li>
             </ul>
 
